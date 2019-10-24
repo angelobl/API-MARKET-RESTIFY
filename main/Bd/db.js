@@ -1,4 +1,4 @@
-module.exports.users = [
+const Users = [
   {
     id:'123456789',
     name:'Mayte',
@@ -12,7 +12,7 @@ module.exports.users = [
     password:'helen123'
   }
 ];
-module.exports.products =[
+const Products =[
   {
     name:'casaca',
     price:'80',
@@ -26,3 +26,8 @@ module.exports.products =[
     owner:'987654321'
   }
 ]
+
+module.exports = {
+  Users,
+  Products,
+}
