@@ -5,8 +5,7 @@ const ProductsRoutes = new Route()
 
 ProductsRoutes.post('/products',(req,res,next)=>{
   try{
-    //if(!name)
-    Users.push({...req.body})
+    Products.push({...req.body})
     res.end(JSON.stringify(Products)) 
   }catch(e){
       console.log(e)
