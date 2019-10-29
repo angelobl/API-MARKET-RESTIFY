@@ -1,4 +1,4 @@
-const {Products} = require('../../Bd/db');
+let {Products} = require('../../Bd/db');
 const Route = require('restify-router').Router;
 
 const ProductsRoutes = new Route()
@@ -26,12 +26,22 @@ ProductsRoutes.get('/products/:id',(req,res,next)=>{
 
 ProductsRoutes.put('/products/:id', (req,res,next)=>{
   try{
-    const product = Products.filter((elem)=>elem.id ===req.params.id)[0];
-    Products.push({
-      ...product,
-      ...req.body
-    })
-    res.end(JSON.stringify(product)) 
+ // if()
+   Products = Products.map((elem)=>
+      (elem.id===req.params.id /* && elem.owner ===req.headers.user.id */)
+      ?{...elem,...req.body}
+      :elem
+    )
+    res.end(JSON.stringify(Products)) 
+  }catch(e){
+      console.log(e)
+  }
+})
+
+ProductsRoutes.del('/products/:id', (req,res,next)=>{
+  try{
+   Products = Products.filter((elem)=> elem.id !== req.params.id )
+    res.end(JSON.stringify(Products)) 
   }catch(e){
       console.log(e)
   }
