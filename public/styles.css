@@ -1,0 +1,11 @@
+html, body {
+  box-sizing: border-box;;
+}
+
+nav {
+  height: 80px;
+}
+
+.home-title {
+  padding: 30px;
+}

@@ -10,7 +10,14 @@ const server = restify.createServer();
 server.use(render({
   engine: 'pug',
   dir: `${__dirname}/views`
-}))
+}));
+
+// Static files
+server.get('/public/*',
+  restify.plugins.serveStatic({
+    directory: __dirname,
+  })
+);
 
 //settings
 server.use(restify.plugins.acceptParser(server.acceptable))
