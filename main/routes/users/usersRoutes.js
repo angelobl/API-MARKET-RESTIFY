@@ -1,8 +1,8 @@
-const {Users} = require('../../Bd/db');
 const Route = require('restify-router').Router;
-const {authUser} = require('./authMidleware');
+const { Users } = require('../../Bd/db');
+const { authUser } = require('./authMidleware');
 
-const usersRoutes = new Route()
+const usersRoutes = new Route();
 
 usersRoutes.post('/users',(req,res,next)=>{
   try{
@@ -15,9 +15,9 @@ usersRoutes.post('/users',(req,res,next)=>{
 })
 
 usersRoutes.get('/users',(req,res,next)=>{
-  res.setHeader('Content-type', 'application/json')
-  res.writeHead(200)
-  res.end(JSON.stringify(Users))
+  // res.setHeader('Content-type', 'application/json')
+  // res.writeHead(200)
+  res.render('home.pug')
 });
 
 usersRoutes.get('/users/:id',authUser,(req,res,next)=>{   

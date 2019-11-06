@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "restify": "^8.4.0",
+    "restify-render-middleware": "^2.0.2",
     "restify-router": "^0.5.1"
   }
 }

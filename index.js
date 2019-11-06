@@ -1,8 +1,16 @@
 const restify = require('restify');
-const userRoutes = require('./main/routes/users/usersRoutes')
-const productRoutes = require('./main/routes/products/products.routes')
+const render = require('restify-render-middleware')
+const userRoutes = require('./main/routes/users/usersRoutes');
+const productRoutes = require('./main/routes/products/products.routes');
+
+const PORT = process.env.PORT || 4000;
+
 const server = restify.createServer();
-const PORT = 4000;
+
+server.use(render({
+  engine: 'pug',
+  dir: `${__dirname}/views`
+}))
 
 //settings
 server.use(restify.plugins.acceptParser(server.acceptable))
