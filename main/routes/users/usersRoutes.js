@@ -20,33 +20,50 @@ usersRoutes.post("/users", async (req, res, next) => {
   } catch (e) {
     console.log(e);
     res.setHeader("Content-type", "application/json");
-    res.writeHead(200);
+    res.writeHead(500);
     res.end(JSON.stringify("Error al crear usuario"));
   }
 });
 
-usersRoutes.get("/users", (req, res, next) => {
-  res.setHeader("Content-type", "application/json");
-  res.writeHead(200);
-  res.end(JSON.stringify(Users));
+usersRoutes.get("/users", async (req, res, next) => {
+  try {
+    const users = await userModel.find();
+
+    res.setHeader("Content-type", "application/json");
+    res.writeHead(200);
+    res.end(JSON.stringify(users));
+  }catch (e) {
+    res.setHeader("Content-type", "application/json");
+    res.writeHead(500);
+    res.end(JSON.stringify('Error'));
+  }
+  
 });
 
-usersRoutes.get("/users/:id", authUser, (req, res, next) => {
-  res.writeHead(201);
-  const user = Users.filter(elem => elem.id === req.params.id)[0];
-  res.end(JSON.stringify(user));
+usersRoutes.get("/users/:id", async (req, res, next) => {
+  try {
+    res.setHeader("Content-type", "application/json");
+    res.writeHead(201);
+    const user = await userModel.findOne({_id:req.params.id})
+    res.end(JSON.stringify(user));
+  } catch (e) {
+    res.setHeader("Content-type", "application/json");
+    res.writeHead(500);
+    res.end(JSON.stringify('Usuario no encontrado'));
+  }
+  
 });
 
 usersRoutes.put("/users/:id", authUser, (req, res, next) => {
   try {
-    const user = Users.filter(elem => elem.id === req.params.id)[0];
-    Users.push({
-      ...user,
-      ...req.body
-    });
-    res.end(JSON.stringify(user));
+    res.setHeader("Content-type", "application/json");
+    res.writeHead(201);
+    await userModel.findOneAndUpdate({_id:req.params.id},  {$set:{...req.body}} )
+    res.end(JSON.stringify('Usuario actualizado'));
   } catch (e) {
-    console.log(e);
+    res.setHeader("Content-type", "application/json");
+    res.writeHead(500);
+    res.end(JSON.stringify('Usuario no encontrado'));
   }
 });
 
