@@ -1,4 +1,4 @@
-const {Users} = require('../../Bd/db');
+const userModel = require("../../models/user.model");
 
 module.exports.authUser = (req,res,next) =>{
   const user = Users.filter((user) =>  req.params.id === user.id)[0];

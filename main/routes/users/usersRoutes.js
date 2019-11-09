@@ -1,4 +1,3 @@
-const { Users } = require("../../Bd/db");
 const Route = require("restify-router").Router;
 const { authUser } = require("./authMidleware");
 const userModel = require("../../models/user.model");
@@ -54,7 +53,7 @@ usersRoutes.get("/users/:id", async (req, res, next) => {
   
 });
 
-usersRoutes.put("/users/:id", authUser, (req, res, next) => {
+usersRoutes.put("/users/:id", (req, res, next) => {
   try {
     res.setHeader("Content-type", "application/json");
     res.writeHead(201);
