@@ -1,6 +1,6 @@
-let {Products} = require('../../Bd/db');
 const Route = require('restify-router').Router;
 const productModel = require("../../models/product.model");
+const { ownerAuth } = require("./authMidleware");
 
 const ProductsRoutes = new Route()
 
@@ -37,7 +37,7 @@ ProductsRoutes.get('/products',async (req,res,next)=>{
   }
 });
 
-ProductsRoutes.get('/products/:id',(req,res,next)=>{   
+ProductsRoutes.get('/products/:id',async (req,res,next)=>{   
   try {
     res.setHeader("Content-type", "application/json");
     res.writeHead(201);
@@ -50,7 +50,7 @@ ProductsRoutes.get('/products/:id',(req,res,next)=>{
   }
 }); 
 
-ProductsRoutes.put('/products/:id', (req,res,next)=>{
+ProductsRoutes.put('/products/:id/:owner',ownerAuth,async (req,res,next)=>{
   try {
     res.setHeader("Content-type", "application/json");
     res.writeHead(201);
@@ -63,7 +63,7 @@ ProductsRoutes.put('/products/:id', (req,res,next)=>{
   }
 })
 
-ProductsRoutes.del('/products/:id', (req,res,next)=>{
+ProductsRoutes.del('/products/:id/:owner',ownerAuth,async (req,res,next)=>{
   try {
     res.setHeader("Content-type", "application/json");
     res.writeHead(201);

@@ -1,14 +1,12 @@
 const Route = require("restify-router").Router;
-const { authUser } = require("./authMidleware");
 const userModel = require("../../models/user.model");
 
 const usersRoutes = new Route();
 
 usersRoutes.post("/users", async (req, res, next) => {
   try {
-    const { owner, name, email, password } = req.body;
+    const { name, email, password } = req.body;
     await userModel.create({
-      owner,
       name,
       email,
       password

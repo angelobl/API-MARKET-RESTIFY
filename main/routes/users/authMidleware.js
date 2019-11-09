@@ -1,9 +1,10 @@
-const userModel = require("../../models/user.model");
+const productModel = require("../../models/product.model");
 
-module.exports.authUser = (req,res,next) =>{
-  const user = Users.filter((user) =>  req.params.id === user.id)[0];
-  if(!user){
-      res.end(JSON.stringify({message: 'No existe esta persona'}))
+module.exports.ownerAuth = async (req,res,next) =>{
+  const product = await productModel.findOne({_id:req.params.id})
+  if(product.owner!==req.params.owner){
+    res.end(JSON.stringify('Usuario no es owner'));
   }
-  next()
+  next();
+  
 }
