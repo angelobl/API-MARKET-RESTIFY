@@ -1,49 +1,78 @@
-let {Products} = require('../../Bd/db');
 const Route = require('restify-router').Router;
+const productModel = require("../../models/product.model");
+const { ownerAuth } = require("./authMidleware");
 
 const ProductsRoutes = new Route()
 
-ProductsRoutes.post('/products',(req,res,next)=>{
-  try{
-    Products.push({...req.body})
-    res.end(JSON.stringify(Products)) 
-  }catch(e){
-      console.log(e)
+ProductsRoutes.post('/products',async (req,res,next)=>{
+  try {
+    const { name, price, owner} = req.body;
+    await productModel.create({
+      name,
+      price,
+      owner
+    });
+    res.setHeader("Content-type", "application/json");
+    res.writeHead(200);
+    res.end(JSON.stringify("Producto Agregado"));
+  } catch (e) {
+    console.log(e);
+    res.setHeader("Content-type", "application/json");
+    res.writeHead(500);
+    res.end(JSON.stringify("Error al crear Producto"));
   }
 })
 
-ProductsRoutes.get('/products',(req,res,next)=>{
-  res.setHeader('Content-type', 'application/json')
-  res.writeHead(200)
-  res.end(JSON.stringify(Products))
+ProductsRoutes.get('/products',async (req,res,next)=>{
+  try {
+    const products = await productModel.find();
+
+    res.setHeader("Content-type", "application/json");
+    res.writeHead(200);
+    res.end(JSON.stringify(products));
+  }catch (e) {
+    res.setHeader("Content-type", "application/json");
+    res.writeHead(500);
+    res.end(JSON.stringify('Error'));
+  }
 });
 
-ProductsRoutes.get('/products/:id',(req,res,next)=>{   
-  res.writeHead(201)
-  const product = Products.filter((elem)=>elem.id ===req.params.id)[0];
-  res.end(JSON.stringify(product)) 
+ProductsRoutes.get('/products/:id',async (req,res,next)=>{   
+  try {
+    res.setHeader("Content-type", "application/json");
+    res.writeHead(201);
+    const product = await productModel.findOne({_id:req.params.id})
+    res.end(JSON.stringify(product));
+  } catch (e) {
+    res.setHeader("Content-type", "application/json");
+    res.writeHead(500);
+    res.end(JSON.stringify('Producto no encontrado'));
+  }
 }); 
 
-ProductsRoutes.put('/products/:id', (req,res,next)=>{
-  try{
- // if()
-   Products = Products.map((elem)=>
-      (elem.id===req.params.id /* && elem.owner ===req.headers.user.id */)
-      ?{...elem,...req.body}
-      :elem
-    )
-    res.end(JSON.stringify(Products)) 
-  }catch(e){
-      console.log(e)
+ProductsRoutes.put('/products/:id/:owner',ownerAuth,async (req,res,next)=>{
+  try {
+    res.setHeader("Content-type", "application/json");
+    res.writeHead(201);
+    await productModel.findOneAndUpdate({_id:req.params.id},  {$set:{...req.body}} )
+    res.end(JSON.stringify('Producto actualizado'));
+  } catch (e) {
+    res.setHeader("Content-type", "application/json");
+    res.writeHead(500);
+    res.end(JSON.stringify('Producto no encontrado'));
   }
 })
 
-ProductsRoutes.del('/products/:id', (req,res,next)=>{
-  try{
-   Products = Products.filter((elem)=> elem.id !== req.params.id )
-    res.end(JSON.stringify(Products)) 
-  }catch(e){
-      console.log(e)
+ProductsRoutes.del('/products/:id/:owner',ownerAuth,async (req,res,next)=>{
+  try {
+    res.setHeader("Content-type", "application/json");
+    res.writeHead(201);
+    await productModel.findOneAndDelete({_id:req.params.id},  {$set:{...req.body}} )
+    res.end(JSON.stringify('Producto eliminado'));
+  } catch (e) {
+    res.setHeader("Content-type", "application/json");
+    res.writeHead(500);
+    res.end(JSON.stringify('Producto no encontrado'));
   }
 })
 

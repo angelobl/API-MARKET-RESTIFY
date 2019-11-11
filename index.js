@@ -19,6 +19,8 @@ server.get('/public/*',
   })
 );
 
+const {mongoose} = require('./database');
+
 //settings
 server.use(restify.plugins.acceptParser(server.acceptable))
 server.use(restify.plugins.queryParser())
