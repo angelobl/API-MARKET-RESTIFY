@@ -1,16 +1,26 @@
 const restify = require('restify');
-const render = require('restify-render-middleware')
-const userRoutes = require('./main/routes/users/usersRoutes');
-const productRoutes = require('./main/routes/products/products.routes');
+const render = require('restify-render-middleware');
+const corsMiddleware = require('restify-cors-middleware')
+const userRoutes = require('./routes/users/usersRoutes');
+const productRoutes = require('./routes/products/products.routes');
 
 const PORT = process.env.PORT || 4000;
 
 const server = restify.createServer();
 
+const cors = corsMiddleware({  
+  origins: ["*"],
+  allowHeaders: ["Authorization"],
+  exposeHeaders: ["Authorization"]
+});
+
 server.use(render({
   engine: 'pug',
   dir: `${__dirname}/views`
 }));
+
+server.pre(cors.preflight);  
+server.use(cors.actual);  
 
 // Static files
 server.get('/public/*',

@@ -1,10 +1,12 @@
 {
-  "name": "api-market-restify",
+  "name": "client-market-restify",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "now-build": "npm run build",
+    "build": "webpack",
+    "dev": "webpack-dev-server"
   },
   "repository": {
     "type": "git",
@@ -17,12 +19,19 @@
   },
   "homepage": "https://github.com/MAYTESI/API-MARKET-RESTIFY#readme",
   "devDependencies": {
-    "nodemon": "^1.19.4"
+    "@babel/core": "^7.7.2",
+    "@babel/plugin-proposal-class-properties": "^7.7.0",
+    "@babel/preset-env": "^7.7.1",
+    "@babel/preset-react": "^7.7.0",
+    "babel-loader": "^8.0.6",
+    "html-webpack-plugin": "^3.2.0",
+    "npm": "^6.13.0",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
-    "mongoose": "^5.7.8",
-    "restify": "^8.4.0",
-    "restify-render-middleware": "^2.0.2",
-    "restify-router": "^0.5.1"
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0"
   }
 }

@@ -1,0 +1,29 @@
+{
+  "name": "api-market-restify",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MAYTESI/API-MARKET-RESTIFY.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MAYTESI/API-MARKET-RESTIFY/issues"
+  },
+  "homepage": "https://github.com/MAYTESI/API-MARKET-RESTIFY#readme",
+  "devDependencies": {
+    "nodemon": "^1.19.4"
+  },
+  "dependencies": {
+    "mongoose": "^5.7.8",
+    "restify": "^8.4.0",
+    "restify-cors-middleware": "^1.1.1",
+    "restify-render-middleware": "^2.0.2",
+    "restify-router": "^0.5.1"
+  }
+}

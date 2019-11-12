@@ -5,11 +5,12 @@ const usersRoutes = new Route();
 
 usersRoutes.post("/users", async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, owner } = req.body;
     await userModel.create({
       name,
       email,
-      password
+      password,
+      owner
     });
     res.setHeader("Content-type", "application/json");
     res.writeHead(200);
@@ -25,23 +26,16 @@ usersRoutes.post("/users", async (req, res, next) => {
 usersRoutes.get("/users", async (req, res, next) => {
   try {
     const users = await userModel.find();
-
-<<<<<<< HEAD
-usersRoutes.get('/users',(req,res,next)=>{
-  // res.setHeader('Content-type', 'application/json')
-  // res.writeHead(200)
-  res.render('home.pug')
-=======
     res.setHeader("Content-type", "application/json");
     res.writeHead(200);
     res.end(JSON.stringify(users));
+
   }catch (e) {
     res.setHeader("Content-type", "application/json");
     res.writeHead(500);
     res.end(JSON.stringify('Error'));
   }
   
->>>>>>> 91069c078f4a1dd8a7e1696a216ada78781dd2bd
 });
 
 usersRoutes.get("/users/:id", async (req, res, next) => {
@@ -58,7 +52,7 @@ usersRoutes.get("/users/:id", async (req, res, next) => {
   
 });
 
-usersRoutes.put("/users/:id", (req, res, next) => {
+usersRoutes.put("/users/:id", async (req, res, next) => {
   try {
     res.setHeader("Content-type", "application/json");
     res.writeHead(201);

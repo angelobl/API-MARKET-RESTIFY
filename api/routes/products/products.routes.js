@@ -1,6 +1,6 @@
 const Route = require('restify-router').Router;
 const productModel = require("../../models/product.model");
-const { ownerAuth } = require("./authMidleware");
+const { ownerAuth } = require("../users/authMidleware");
 
 const ProductsRoutes = new Route()
 
