@@ -6,6 +6,12 @@ import Login from "./components/login";
 import ProductList from "./components/product-list";
 import AddProduct from "./components/add-product";
 
+const getProducts = async () => {
+  const response = await fetch("http://localhost:4000/products");
+  const products = await response.json();
+  return products;
+};
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -13,15 +19,14 @@ class App extends React.Component {
     this.state = {
       owner: "",
       products: [],
-      productName: '',
-      productPrice: ''
+      productName: "",
+      productPrice: ""
     };
   }
 
-  componentDidMount() {
-    fetch("http://localhost:4000/products")
-      .then(res => res.json())
-      .then(res => this.setState({ products: res }));
+  async componentDidMount() {
+    const products = await getProducts();
+    this.setState({ products: products });
   }
 
   handleChange = event => {
@@ -30,24 +35,41 @@ class App extends React.Component {
     this.setState({ [name]: value });
   };
 
-  handleDelete = event => {
-    fetch(`http://localhost:4000/products/${event.target.value}/${this.state.owner}`,{method:"DELETE"}).then(res => alert("Producto Eliminado"))
+  handleDelete = async event => {
+    const res = await fetch(
+      `http://localhost:4000/products/${event.target.value}/${this.state.owner}`,
+      { method: "DELETE" }
+    );
+    console.log(res)
+    if (res.status === 500) alert("Usuario no es owner");
+    else alert("Producto Eliminado");
+    const products = await getProducts();
+    this.setState({ products: products });
   };
 
-  handleSubmit = event => {
+  handleSubmit = async event => {
     event.preventDefault();
 
-    fetch("http://localhost:4000/products",
-{
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    method: "POST",
-    body: JSON.stringify({name: this.state.productName, price: this.state.productPrice,owner:this.state.owner})
-})
-.then(res => alert("Producto Agregado"))
+    await fetch("http://localhost:4000/products", {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify({
+        name: this.state.productName,
+        price: this.state.productPrice,
+        owner: this.state.owner
+      })
+    });
+    alert("Producto Agregado");
+    const products = await getProducts();
+    this.setState({ products: products });
   };
+
+  handleUpdate = () => {
+
+  }
 
   render() {
     return (
@@ -70,9 +92,16 @@ class App extends React.Component {
             />
           )}
         />
-        <Route exact path="/addproduct" render={() => (
-            <AddProduct handleSubmit={this.handleSubmit} handleChange={this.handleChange} />
-          )} />
+        <Route
+          exact
+          path="/addproduct"
+          render={() => (
+            <AddProduct
+              handleSubmit={this.handleSubmit}
+              handleChange={this.handleChange}
+            />
+          )}
+        />
       </Switch>
     );
   }

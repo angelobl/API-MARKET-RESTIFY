@@ -2,9 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const ProductList = props => (
-  <>
-    <Link to="/addproduct">Añadir Producto</Link>
-    <table>
+  <div style={{padding:"50px"}}>
+    <Link className="btn-floating btn-large waves-effect waves-light teal lighten-2" style={{marginBottom:"30px"}} to="/addproduct">
+    <i class="material-icons">add</i>
+    </Link>
+    <table >
       <tr>
         <th>Id</th>
         <th>Name</th>
@@ -18,12 +20,18 @@ const ProductList = props => (
           <td>{prod.name}</td>
           <td>{prod.price}</td>
           <td>{prod.owner}</td>
-          <td><button onClick={props.handleDelete} value={prod._id}>Delete</button></td>
+          <td>
+            <button onClick={props.handleDelete}
+              value={prod._id}
+              className="btn-floating btn-large waves-effect waves-light red">
+            X</button>
+            
+          </td>
         </tr>
       ))}
     </table>
-    <Link to="/">Regresar</Link>
-  </>
+    
+  </div>
 );
 
 export default ProductList;
