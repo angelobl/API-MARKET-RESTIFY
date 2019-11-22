@@ -20,7 +20,11 @@
     "nodemon": "^1.19.4"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "mongoose": "^5.7.8",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "passport-restify": "^1.0.1",
     "restify": "^8.4.0",
     "restify-cors-middleware": "^1.1.1",
     "restify-router": "^0.5.1"

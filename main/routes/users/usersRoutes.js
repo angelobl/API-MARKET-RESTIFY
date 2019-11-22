@@ -1,15 +1,55 @@
 const Route = require("restify-router").Router;
 const userModel = require("../../models/user.model");
+const passport = require('passport-restify');
 
 const usersRoutes = new Route();
 
+
+usersRoutes.post("/signup",passport.authenticate('local-singup', {
+  failureRedirect: '/signup/error',
+  failureFlash: true
+}),function(req,res) {
+  res.end(JSON.stringify({message:"Usuario registrado"}));
+});
+
+usersRoutes.get("/signup/error", async (req, res, next) => {
+  res.end(JSON.stringify({message:"Usuario ya existe"}));
+})
+
+usersRoutes.post("/signin",passport.authenticate('local-signin', {
+  failureRedirect: '/signin/error',
+  failureFlash: true
+}),function(req,res) {
+  res.end(JSON.stringify({user:req.user.username}));
+});
+
+usersRoutes.get("/signin/error", async (req, res, next) => {
+  res.end(JSON.stringify({message:"Usuario y/o contraseña incorrectos"}));
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 usersRoutes.post("/users", async (req, res, next) => {
   res.setHeader("Content-type", "application/json");
   try {
-    const { name, email, password } = req.body;
+    const { username, password } = req.body;
     await userModel.create({
-      name,
-      email,
+      username,
       password
     });
     
@@ -67,5 +107,5 @@ usersRoutes.put("/users/:id", async (req, res, next) => {
     res.end(JSON.stringify('Usuario no encontrado'));
   }
 });
-
+*/
 module.exports = usersRoutes;

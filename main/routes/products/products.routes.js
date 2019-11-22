@@ -15,12 +15,12 @@ ProductsRoutes.post('/products',async (req,res,next)=>{
     });
     
     res.writeHead(200);
-    res.end(JSON.stringify("Producto Agregado"));
+    res.end(JSON.stringify({message:"Producto Agregado"}));
   } catch (e) {
     console.log(e);
     
     res.writeHead(500);
-    res.end(JSON.stringify("Error al crear Producto"));
+    res.end(JSON.stringify({message:"Error al crear Producto"}));
   }
 })
 
@@ -35,7 +35,7 @@ ProductsRoutes.get('/products',async (req,res,next)=>{
   }catch (e) {
     
     res.writeHead(500);
-    res.end(JSON.stringify('Error'));
+    res.end(JSON.stringify({message:'Error'}));
   }
 });
 
@@ -49,35 +49,35 @@ ProductsRoutes.get('/products/:id',async (req,res,next)=>{
   } catch (e) {
     
     res.writeHead(500);
-    res.end(JSON.stringify('Producto no encontrado'));
+    res.end(JSON.stringify({message:'Producto no encontrado'}));
   }
 }); 
 
 ProductsRoutes.put('/products/:id/:owner',ownerAuth,async (req,res,next)=>{
-  res.setHeader("Content-type", "application/json");
+  
   try {
-    
+    res.setHeader("Content-type", "application/json");
     res.writeHead(201);
     await productModel.findOneAndUpdate({_id:req.params.id},  {$set:{...req.body}} )
-    res.end(JSON.stringify('Producto actualizado'));
+    res.end(JSON.stringify({message:'Producto actualizado'}));
   } catch (e) {
-    
-    res.writeHead(500);
-    res.end(JSON.stringify('Producto no encontrado'));
+    //res.setHeader("Content-type", "application/json");
+    //res.writeHead(500);
+    res.end(JSON.stringify({message:'Producto no encontrado'}));
   }
 })
 
 ProductsRoutes.del('/products/:id/:owner',ownerAuth,async (req,res,next)=>{
-  res.setHeader("Content-type", "application/json");
+  
   try {
-    
+    res.setHeader("Content-type", "application/json");
     res.writeHead(201);
     await productModel.findOneAndDelete({_id:req.params.id},  {$set:{...req.body}} )
-    res.end(JSON.stringify('Producto eliminado'));
+    res.end(JSON.stringify({message:'Producto eliminado'}));
   } catch (e) {
     
-    res.writeHead(500);
-    res.end(JSON.stringify('Producto no encontrado'));
+    //res.writeHead(500);
+    res.end(JSON.stringify({message:'Producto no encontrado'}));
   }
 })
 

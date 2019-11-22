@@ -25,6 +25,12 @@ const ProductList = props => (
               value={prod._id}
               className="btn-floating btn-large waves-effect waves-light red">
             X</button>
+            <button onClick={props.handleUpdateRedirect}
+              data-id={prod._id}
+              data-name={prod.name}
+              data-price={prod.price}
+              className="btn-floating btn-large waves-effect waves-light yellow">
+            X</button>
             
           </td>
         </tr>
