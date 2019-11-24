@@ -3,10 +3,12 @@ import "./App.css";
 import { Switch, Route, withRouter } from "react-router-dom";
 
 import Login from "./components/login";
+import Nav from "./components/nav";
 import Register from "./components/register";
 import ProductList from "./components/product-list";
 import AddProduct from "./components/add-product";
 import Update from "./components/update";
+import Chat from "./components/chat"
 
 const getProducts = async () => {
   const response = await fetch("http://localhost:4000/products");
@@ -151,8 +153,14 @@ class App extends React.Component {
     alert(json.message);
   };
 
+  handleLogout = () => {
+    this.setState({owner:""})
+  }
+
   render() {
     return (
+      <>
+      <Nav handleLogout={this.handleLogout} owner={this.state.owner}/>
       <Switch>
         <Route
           exact
@@ -209,7 +217,17 @@ class App extends React.Component {
             />
           )}
         />
+        <Route
+          exact
+          path="/chat"
+          render={() => (
+            <Chat
+            owner={this.state.owner}
+            />
+          )}
+        />
       </Switch>
+      </>
     );
   }
 }
