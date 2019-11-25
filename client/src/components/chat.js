@@ -1,10 +1,10 @@
 import React from "react";
-import { connect, sendMessage } from "../socket";
+import { connect, listen, sendMessage,disconnect } from "../socket";
 
 const color = `rgba(${Math.floor(Math.random() * (256 - 0 + 1)) +
   0},${Math.floor(Math.random() * (256 - 0 + 1)) + 0},${Math.floor(
   Math.random() * (256 - 0 + 1)
-) + 0},1)`
+) + 0},1)`;
 
 class Chat extends React.Component {
   constructor(props) {
@@ -17,8 +17,9 @@ class Chat extends React.Component {
   }
 
   componentDidMount() {
-    connect(
-      this.props.owner,
+    connect(this.props.owner);
+    listen(
+      
       message => {
         console.log("Socket conectado");
         let messages = this.state.listMessages;
@@ -29,10 +30,17 @@ class Chat extends React.Component {
         let messages = this.state.listMessages;
         messages.push({ message: `${user} se conecto al chat` });
         this.setState({ listMessages: messages });
+      },
+      user => {
+        let messages = this.state.listMessages;
+        messages.push({ message: `${user} se desconecto del chat` });
+        this.setState({ listMessages: messages });
       }
     );
-    
-    
+  }
+
+  componentWillUnmount() {
+    disconnect();
   }
 
   handleChange = e => {
@@ -42,7 +50,11 @@ class Chat extends React.Component {
   };
 
   handleSend = () => {
-    sendMessage({ owner: this.props.owner, message: this.state.message, color:color });
+    sendMessage({
+      owner: this.props.owner,
+      message: this.state.message,
+      color: color
+    });
     this.setState({ message: "" });
   };
 
@@ -53,11 +65,11 @@ class Chat extends React.Component {
           <div className="chat-text">
             {this.state.listMessages.map(m => (
               <div key={Math.random()}>
-                <span style={{ fontWeight: "bold",color:m.color}}>
+                <span style={{ fontWeight: "bold", color: m.color }}>
                   {m.owner}
                 </span>
                 {m.owner ? <span>: </span> : null}
-                <span key={Math.random()} style={{ color:m.owner ? "" : "rgba(46, 49, 49, 1)" }}>
+                <span style={{ color: m.owner ? "" : "rgba(46, 49, 49, 1)" }}>
                   {m.message}
                 </span>
               </div>
@@ -69,10 +81,11 @@ class Chat extends React.Component {
               value={this.state.message}
               className="chat-input"
               placeholder="Escribe un mensaje"
+              style={{ fontSize: "20px" }}
             />
             <button
               onClick={this.handleSend}
-              className="waves-effect waves-light btn app-btn"
+              className="waves-effect waves-light btn-large app-btn"
             >
               Send
             </button>

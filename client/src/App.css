@@ -32,6 +32,7 @@
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
+  font-size: 20px;
 }
 
 .chat-text {
@@ -43,7 +44,7 @@
   justify-content: flex-start;
   align-items: flex-start;
   overflow:auto;
-  font-size: 1.4rem;
+  
 }
 
 .chat-send {

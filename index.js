@@ -26,10 +26,11 @@ server.use(cors.actual)
 server.use(passport.initialize());
 server.use(passport.session());
 
-let user = null;
+
 
 io.on('connection', client => {
   console.log("Socket conectado "+client.id)
+  let user = null;
 //console.log(client)
 
 client.on('userLogged', data => { 
@@ -43,6 +44,7 @@ client.on('userLogged', data => {
   
   client.on('disconnect', () => { 
     client.broadcast.emit('userDisconnected',user)
+    console.log("Socket desconectado "+client.id)
     console.log(user);
    });
  });

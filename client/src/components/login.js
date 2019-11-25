@@ -16,9 +16,11 @@ const Login = props => (
         name="password"
         onChange={props.handleChange}
       />
-      <button className="btn waves-effect waves-light app-btn">Login</button>
+      <button className="btn-large waves-effect waves-light app-btn">
+        Login
+      </button>
     </form>
-<Link to="/register">Register</Link>
+    <Link to="/register">Register</Link>
   </div>
 );
 

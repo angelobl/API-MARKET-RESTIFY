@@ -8,7 +8,7 @@ import Register from "./components/register";
 import ProductList from "./components/product-list";
 import AddProduct from "./components/add-product";
 import Update from "./components/update";
-import Chat from "./components/chat"
+import Chat from "./components/chat";
 
 const getProducts = async () => {
   const response = await fetch("http://localhost:4000/products");
@@ -154,79 +154,75 @@ class App extends React.Component {
   };
 
   handleLogout = () => {
-    this.setState({owner:""})
-  }
+    this.setState({ owner: "" });
+  };
 
   render() {
     return (
       <>
-      <Nav handleLogout={this.handleLogout} owner={this.state.owner}/>
-      <Switch>
-        <Route
-          exact
-          path="/"
-          render={() => (
-            <Login
-              handleChange={this.handleChange}
-              handleLogin={this.handleLogin}
-            />
-          )}
-        />
-        <Route
-          exact
-          path="/register"
-          render={() => (
-            <Register
-              handleChange={this.handleChange}
-              handleRegister={this.handleRegister}
-            />
-          )}
-        />
-        <Route
-          exact
-          path="/products"
-          render={() => (
-            <ProductList
-              owner={this.state.owner}
-              products={this.state.products}
-              handleDelete={this.handleDelete}
-              handleUpdate={this.handleUpdate}
-              handleUpdateRedirect={this.handleUpdateRedirect}
-            />
-          )}
-        />
-        <Route
-          exact
-          path="/addproduct"
-          render={() => (
-            <AddProduct
-              handleSubmit={this.handleSubmit}
-              handleChange={this.handleChange}
-            />
-          )}
-        />
-        <Route
-          exact
-          path="/update"
-          render={() => (
-            <Update
-              handleUpdate={this.handleUpdate}
-              handleChange={this.handleChange}
-              productName={this.state.productName}
-              productPrice={this.state.productPrice}
-            />
-          )}
-        />
-        <Route
-          exact
-          path="/chat"
-          render={() => (
-            <Chat
-            owner={this.state.owner}
-            />
-          )}
-        />
-      </Switch>
+        <Nav handleLogout={this.handleLogout} owner={this.state.owner} />
+        <Switch>
+          <Route
+            exact
+            path="/"
+            render={() => (
+              <Login
+                handleChange={this.handleChange}
+                handleLogin={this.handleLogin}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/register"
+            render={() => (
+              <Register
+                handleChange={this.handleChange}
+                handleRegister={this.handleRegister}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/products"
+            render={() => (
+              <ProductList
+                owner={this.state.owner}
+                products={this.state.products}
+                handleDelete={this.handleDelete}
+                handleUpdate={this.handleUpdate}
+                handleUpdateRedirect={this.handleUpdateRedirect}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/addproduct"
+            render={() => (
+              <AddProduct
+                handleSubmit={this.handleSubmit}
+                handleChange={this.handleChange}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/update"
+            render={() => (
+              <Update
+                handleUpdate={this.handleUpdate}
+                handleChange={this.handleChange}
+                productName={this.state.productName}
+                productPrice={this.state.productPrice}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/chat"
+            render={() => <Chat owner={this.state.owner} />}
+          />
+        </Switch>
       </>
     );
   }
