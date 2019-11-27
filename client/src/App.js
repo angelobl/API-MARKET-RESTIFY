@@ -27,7 +27,9 @@ class App extends React.Component {
       products: [],
       productName: "",
       productId: "",
-      productPrice: ""
+      productPrice: "",
+      prediction: [],
+      file:null
     };
   }
 
@@ -56,6 +58,43 @@ class App extends React.Component {
   handleSubmit = async event => {
     event.preventDefault();
 
+    //Validaciones
+    if(!this.state.productName || !this.state.productPrice) {
+      alert("Insert all fields")
+      return
+    }
+    if(!this.state.prediction) {
+      alert("Insert an image")
+      return
+    }
+    
+    //.filter(p => p.confidence > 0.3 )
+    console.log(this.state.prediction);
+
+    const productNames = this.state.productName.split(" ")
+    console.log(productNames)
+    const predictions = this.state.prediction.map(p => p.label)
+  
+    
+    const matches = predictions.filter(p => {
+      for (var i = 0; i < productNames.length ; i++) {
+        if(productNames[i] === "")
+        return false
+        if(p.includes(productNames[i].toLowerCase()))
+          return true;
+     }
+    })
+
+    console.log(matches.length)
+
+    if(!matches.length){
+      alert("Insert an image that matches your product")
+      return
+    }
+
+    
+
+    /*
     const res = await fetch("http://localhost:4000/products", {
       headers: {
         Accept: "application/json",
@@ -74,6 +113,7 @@ class App extends React.Component {
     this.setState({ products: products });
     this.setState({ productName: "" });
     this.setState({ productPrice: "" });
+    */
   };
 
   handleUpdateRedirect = event => {
@@ -157,6 +197,16 @@ class App extends React.Component {
     this.setState({ owner: "" });
   };
 
+  handleFile = file => {
+    console.log(file);
+    this.setState({file:file})
+  };
+
+  handleResults = results => {
+    console.log(results);
+    this.setState({prediction:results})
+  };
+
   render() {
     return (
       <>
@@ -202,6 +252,8 @@ class App extends React.Component {
               <AddProduct
                 handleSubmit={this.handleSubmit}
                 handleChange={this.handleChange}
+                handleFile={this.handleFile}
+                handleResults={this.handleResults}
               />
             )}
           />
