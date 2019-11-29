@@ -1,84 +1,70 @@
-const Route = require('restify-router').Router;
+var express = require("express");
+var router = express.Router();
 const productModel = require("../../models/product.model");
 const { ownerAuth } = require("../users/authMidleware");
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/' })
 
-const ProductsRoutes = new Route()
-
-ProductsRoutes.post('/products',async (req,res,next)=>{
-  res.setHeader("Content-type", "application/json");
+router.post("/", async (req, res, next) => {
   try {
-    const { name, price, owner} = req.body;
+    const { name, price, owner } = req.body;
     await productModel.create({
       name,
       price,
       owner
     });
-    
-    res.writeHead(200);
-    res.end(JSON.stringify({message:"Producto Agregado"}));
+    res.status(200).json({ message: "Producto Agregado" });
   } catch (e) {
     console.log(e);
-    
-    res.writeHead(500);
-    res.end(JSON.stringify({message:"Error al crear Producto"}));
-  }
-})
-
-ProductsRoutes.get('/products',async (req,res,next)=>{
-  res.setHeader("Content-type", "application/json");
-  try {
-    const products = await productModel.find();
-
-    
-    res.writeHead(200);
-    res.end(JSON.stringify(products));
-  }catch (e) {
-    
-    res.writeHead(500);
-    res.end(JSON.stringify({message:'Error'}));
+    res.status(500).json({ message: "Producto Agregado" });
   }
 });
 
-ProductsRoutes.get('/products/:id',async (req,res,next)=>{   
-  res.setHeader("Content-type", "application/json");
+router.get("/", async (req, res, next) => {
   try {
-    
-    res.writeHead(201);
-    const product = await productModel.findOne({_id:req.params.id})
-    res.end(JSON.stringify(product));
+    const products = await productModel.find();
+    res.status(200).json(products);
   } catch (e) {
-    
-    res.writeHead(500);
-    res.end(JSON.stringify({message:'Producto no encontrado'}));
+    res.status(500).json({ message: "Error" });
   }
-}); 
+});
 
-ProductsRoutes.put('/products/:id/:owner',ownerAuth,async (req,res,next)=>{
-  
+router.get("/:id", async (req, res, next) => {
   try {
-    res.setHeader("Content-type", "application/json");
-    res.writeHead(201);
-    await productModel.findOneAndUpdate({_id:req.params.id},  {$set:{...req.body}} )
-    res.end(JSON.stringify({message:'Producto actualizado'}));
+    const product = await productModel.findOne({ _id: req.params.id });
+    res.status(200).json(product);
   } catch (e) {
-    //res.setHeader("Content-type", "application/json");
-    //res.writeHead(500);
-    res.end(JSON.stringify({message:'Producto no encontrado'}));
+    res.status(500).json({ message: "Producto no encontrado" });
   }
-})
+});
 
-ProductsRoutes.del('/products/:id/:owner',ownerAuth,async (req,res,next)=>{
-  
+router.put("/:id/:owner", ownerAuth, async (req, res, next) => {
   try {
-    res.setHeader("Content-type", "application/json");
-    res.writeHead(201);
-    await productModel.findOneAndDelete({_id:req.params.id},  {$set:{...req.body}} )
-    res.end(JSON.stringify({message:'Producto eliminado'}));
+    await productModel.findOneAndUpdate(
+      { _id: req.params.id },
+      { $set: { ...req.body } }
+    );
+    res.status(200).json({ message: "Producto actualizado" });
   } catch (e) {
-    
-    //res.writeHead(500);
-    res.end(JSON.stringify({message:'Producto no encontrado'}));
+    res.status(500).json({ message: "Producto no encontrado" });
   }
-})
+});
 
-module.exports = ProductsRoutes;
+router.delete("/:id/:owner", ownerAuth, async (req, res, next) => {
+  try {
+    await productModel.findOneAndDelete(
+      { _id: req.params.id },
+      { $set: { ...req.body } }
+    );
+    res.status(200).json({ message: "Producto eliminado" });
+  } catch (e) {
+    res.status(500).json({ message: "Producto no encontrado" });
+  }
+});
+
+router.post("/images", upload.single("product"), (req, res, next) => {
+  console.log(req.file);
+  res.status(200).json({ message: "Success" });
+});
+
+module.exports = router;
