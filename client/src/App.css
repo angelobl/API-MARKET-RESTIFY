@@ -64,3 +64,17 @@
 .chat-input {
   color: white;
 }
+
+.dropbox {
+  height:200px;
+  width:100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 4px dashed #fff;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  color:white;
+  margin-top:15px;
+  font-weight: bold;
+  
+}

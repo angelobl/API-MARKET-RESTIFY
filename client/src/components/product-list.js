@@ -3,9 +3,6 @@ import { Link } from "react-router-dom";
 
 const ProductList = props => (
   <div style={{padding:"50px"}}>
-    <Link className="btn-floating btn-large waves-effect waves-light teal lighten-2" style={{marginBottom:"30px"}} to="/addproduct">
-    <i class="material-icons">add</i>
-    </Link>
     <table >
       <tr>
         <th>Id</th>

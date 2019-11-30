@@ -17,9 +17,18 @@ const getProducts = async () => {
   return products;
 };
 
+const arrayBufferToBase64 = (buffer) => {
+  var binary = '';
+  var bytes = [].slice.call(new Uint8Array(buffer));
+  bytes.forEach((b) => binary += String.fromCharCode(b));
+  return window.btoa(binary);
+};
+
 class App extends React.Component {
   constructor(props) {
     super(props);
+
+    this.exampleRef = React.createRef();
 
     this.state = {
       owner: "",
@@ -30,7 +39,9 @@ class App extends React.Component {
       productId: "",
       productPrice: "",
       prediction: [],
-      file: null
+      fileImage: null,
+      fileVideo:null,
+      blob:null
     };
   }
 
@@ -64,7 +75,7 @@ class App extends React.Component {
       alert("Insert all fields");
       return;
     }
-    if (!this.state.prediction || !this.state.file) {
+    if (!this.state.prediction || !this.state.fileImage || !this.state.fileVideo) {
       alert("Insert an image");
       return;
     }
@@ -91,18 +102,6 @@ class App extends React.Component {
     }
 
     //Post request
-    const formData = new FormData();
-
-    formData.set('enctype','multipart/form-data')
-    formData.append('product', this.state.file);
-
-    const res = await fetch("http://localhost:4000/products/images", {
-      method: "POST",
-      body: formData
-    })
-    const json = await res.json();
-    console.log(json);
-
     /*
     const res = await fetch("http://localhost:4000/products", {
       headers: {
@@ -116,12 +115,36 @@ class App extends React.Component {
         owner: this.state.owner
       })
     });
-    const json = await res.json();
-    alert(json.message);
+    const json1 = await res.json();
+    */
+
+    const formData = new FormData();
+
+    formData.set('enctype','multipart/form-data')
+    formData.append('image', this.state.fileImage);
+    formData.append('video', this.state.fileVideo);
+    formData.append('name', this.state.productName);
+    formData.append('price', this.state.productPrice);
+    formData.append('owner', this.state.owner);
+
+    const res2 = await fetch("http://localhost:4000/products", {
+      method: "POST",
+      body: formData
+    })
+    const json2 = await res2.json();
+    console.log(json2);
+
+    
     const products = await getProducts();
+
+    
     this.setState({ products: products });
     this.setState({ productName: "" });
     this.setState({ productPrice: "" });
+
+    alert(json2.message)
+    /*
+    
     */
   };
 
@@ -166,6 +189,21 @@ class App extends React.Component {
 
   handleLogin = async event => {
     event.preventDefault();
+
+    /*
+    const res = await fetch("http://localhost:4000/products/image/file")
+    const json = await res.json();
+    console.log(json);
+    
+
+  const base64 = arrayBufferToBase64(json.data.data)
+  const base64Flag = 'data:image/jpeg;base64,';
+    console.log(base64)
+    this.setState({blob:base64Flag+base64})
+    */
+    
+
+    
     console.log("logeando");
     const res = await fetch("http://localhost:4000/users/signin", {
       headers: {
@@ -187,6 +225,7 @@ class App extends React.Component {
     } else if (json.message) {
       alert(json.message);
     }
+    
   };
 
   handleRegister = async event => {
@@ -229,6 +268,10 @@ class App extends React.Component {
     this.setState({ prediction: results });
   };
 
+  handleFiles = (key,value) => {
+    this.setState({[key]:value})
+  }
+
   render() {
     return (
       <>
@@ -241,6 +284,8 @@ class App extends React.Component {
               <Login
                 handleChange={this.handleChange}
                 handleLogin={this.handleLogin}
+                blob={this.state.blob}
+                exampleRef={this.exampleRef}
               />
             )}
           />
@@ -276,7 +321,7 @@ class App extends React.Component {
                   <AddProduct
                     handleSubmit={this.handleSubmit}
                     handleChange={this.handleChange}
-                    handleFile={this.handleFile}
+                    handleFiles={this.handleFiles}
                     handleResults={this.handleResults}
                   />
                 )}

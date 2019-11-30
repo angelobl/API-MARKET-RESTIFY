@@ -21,36 +21,67 @@ const predict = async (imageURL, imageRef) => {
 const AddProduct = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [imageURL, setimageURL] = useState(null);
+  const [videoURL, setVideoURL] = useState(null);
   const imageRef = useRef();
-  const onDrop = useCallback(acceptedFiles => {
-    acceptedFiles.forEach(file => {
-      console.log(file);
-      props.handleFile(file);
-      //imageRef.srcObject = file;
-      //setFile(URL.createObjectURL(file[0]));
-      const reader = new FileReader();
+  const onDropImage = useCallback(e => {
+    e.preventDefault();
+    let file = e.dataTransfer.files[0];
+    console.log(file);
+    if(file.type!=="image/png" && file.type!=="image/jpeg")
+      return
+    
+    //if(file.type==="")
+    props.handleFiles("fileImage",file);
+    //imageRef.srcObject = file;
+    //setFile(URL.createObjectURL(file[0]));
+    const reader = new FileReader();
 
-      reader.onabort = () => console.log("file reading was aborted");
-      reader.onerror = () => console.log("file reading has failed");
-      reader.onload = () => {
-        // Do whatever you want with the file contents
-        const binaryStr = reader.result;
-        //console.log(binaryStr)
-        setimageURL(reader.result);
-        //props.handleFile(reader.result)
-      };
-      reader.readAsDataURL(file);
-    });
+    reader.onabort = () => console.log("file reading was aborted");
+    reader.onerror = () => console.log("file reading has failed");
+    reader.onload = () => {
+      // Do whatever you want with the file contents
+      const binaryStr = reader.result;
+      //console.log(binaryStr)
+      setimageURL(reader.result);
+      console.log(binaryStr);
+      //props.handleFile(reader.result)
+    };
+    reader.readAsDataURL(file);
   }, []);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const onDropVideo = useCallback(e => {
+    e.preventDefault();
+    let file = e.dataTransfer.files[0];
+    if(file.type!=="video/mp4")
+      return
+    
+    console.log(file);
+    //if(file.type==="")
+    props.handleFiles("fileVideo",file);
+    //imageRef.srcObject = file;
+    //setFile(URL.createObjectURL(file[0]));
+    const reader = new FileReader();
+
+    reader.onabort = () => console.log("file reading was aborted");
+    reader.onerror = () => console.log("file reading has failed");
+    reader.onload = () => {
+      // Do whatever you want with the file contents
+      const binaryStr = reader.result;
+      //console.log(binaryStr)
+      setVideoURL(reader.result);
+      console.log(binaryStr);
+      //props.handleFile(reader.result)
+    };
+    reader.readAsDataURL(file);
+  }, []);
 
   useEffect(() => {
     async function fetchResults() {
       setIsLoading(true);
       const results = await predict(imageURL, imageRef);
       setIsLoading(false);
-      props.handleResults(results);
+      //props.handleResults(results);
+      props.handleFiles("prediction",results)
     }
     fetchResults();
   }, [imageURL]);
@@ -62,7 +93,7 @@ const AddProduct = props => {
         className="content"
         style={{ flexDirection: "row", height: "50%", width: "60%" }}
       >
-        <div style={{ flexBasis: "60%",paddingRight:"10px"}}>
+        <div style={{ flexBasis: "60%", paddingRight: "10px" }}>
           <form onSubmit={props.handleSubmit}>
             <input
               type="text"
@@ -76,18 +107,15 @@ const AddProduct = props => {
               name="productPrice"
               onChange={props.handleChange}
             />
-            <div {...getRootProps()} style={{ cursor: "pointer" }}>
-              <input {...getInputProps()} />
-              {isDragActive ? (
-                <p>Drop the files here ...</p>
-              ) : (
-                <p>Drag 'n' drop some files here, or click to select files</p>
-              )}
-            </div>
-
             <button className="btn waves-effect waves-light app-btn">
               Añadir Producto
             </button>
+            <div onDragOver={e => e.preventDefault()} onDrop={onDropImage} className="dropbox">
+              <p>Drag and Drop your image here</p>
+            </div>
+            <div onDragOver={e => e.preventDefault()} onDrop={onDropVideo} className="dropbox">
+            <p>Drag and Drop your video here</p>
+            </div>
           </form>
         </div>
         <div
@@ -102,6 +130,14 @@ const AddProduct = props => {
             ref={imageRef}
             style={{ maxHeight: "300px", maxWidth: "300px" }}
           />
+          <video
+            src={videoURL}
+            style={{ maxHeight: "300px", maxWidth: "300px" }}
+            controls
+          >
+            <source type="video/mp4"></source>
+          </video>
+
           <div
             class="preloader-wrapper small active"
             style={{ display: isLoading ? "" : "none", marginLeft: "40%" }}
