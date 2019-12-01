@@ -20,7 +20,6 @@ const predict = async (imageURL, imageRef) => {
 const AddProduct = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [imageURL, setimageURL] = useState(null);
-  const [videoURL, setVideoURL] = useState(null);
   const imageRef = useRef();
   const onDropImage = useCallback(e => {
     e.preventDefault();
@@ -56,39 +55,6 @@ const AddProduct = props => {
     reader.readAsDataURL(file);
   }, []);
 
-  const onDropVideo = useCallback(e => {
-    e.preventDefault();
-    let file = e.dataTransfer.files[0];
-    if(file.type!=="video/mp4")
-    {
-      alert("Only mp4 format are accepted")
-      return
-    }
-    if(file.size>16000000)
-    {
-      alert("Only 16mb files are accepted")
-      return
-    }
-    
-    console.log(file);
-    //if(file.type==="")
-    props.handleFiles("fileVideo",file);
-    //imageRef.srcObject = file;
-    //setFile(URL.createObjectURL(file[0]));
-    const reader = new FileReader();
-
-    reader.onabort = () => console.log("file reading was aborted");
-    reader.onerror = () => console.log("file reading has failed");
-    reader.onload = () => {
-      // Do whatever you want with the file contents
-      const binaryStr = reader.result;
-      //console.log(binaryStr)
-      setVideoURL(reader.result);
-      //console.log(binaryStr);
-      //props.handleFile(reader.result)
-    };
-    reader.readAsDataURL(file);
-  }, []);
 
   useEffect(() => {
     async function fetchResults() {
@@ -128,9 +94,6 @@ const AddProduct = props => {
             <div onDragOver={e => e.preventDefault()} onDrop={onDropImage} className="dropbox">
               <p>Drag and Drop your image here</p>
             </div>
-            <div onDragOver={e => e.preventDefault()} onDrop={onDropVideo} className="dropbox">
-            <p>Drag and Drop your video here</p>
-            </div>
           </form>
         </div>
         <div
@@ -145,13 +108,6 @@ const AddProduct = props => {
             ref={imageRef}
             style={{ maxHeight: "300px", maxWidth: "300px" }}
           />
-          <video
-            src={videoURL}
-            style={{ maxHeight: "300px", maxWidth: "300px" }}
-            controls
-          >
-            <source type="video/mp4"></source>
-          </video>
 
           <div
             className="preloader-wrapper small active"

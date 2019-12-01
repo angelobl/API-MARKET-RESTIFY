@@ -19,7 +19,6 @@ const ProductList = props => (
         <th>Name</th>
         <th>Price</th>
         <th>Owner</th>
-        <th>Video</th>
         <th>Action</th>
       </tr>
       {
@@ -38,17 +37,6 @@ const ProductList = props => (
           <td>{prod.price}</td>
           <td>{prod.owner}</td>
           <td>
-            <video
-              src={`data:${prod.video.contentType};base64,${arrayBufferToBase64(
-                prod.video.data.data
-              )}`}
-              style={{ maxHeight: "300px", maxWidth: "300px" }}
-              controls
-            >
-              <source type="video/mp4"></source>
-            </video>
-          </td>
-          <td>
             <button
               onClick={props.handleDelete}
               value={prod._id}
@@ -64,9 +52,7 @@ const ProductList = props => (
               data-image={`data:${prod.image.contentType};base64,${arrayBufferToBase64(
                 prod.image.data.data
               )}`}
-              data-video={`data:${prod.video.contentType};base64,${arrayBufferToBase64(
-                prod.video.data.data
-              )}`}
+              
               className="btn-floating btn-large waves-effect waves-light yellow"
             >
               X

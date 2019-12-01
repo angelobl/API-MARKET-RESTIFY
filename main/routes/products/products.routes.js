@@ -8,13 +8,11 @@ const path = require("path");
 const fs = require("fs");
 
 var cpUpload = upload.fields([
-  { name: "image", maxCount: 1 },
-  { name: "video", maxCount: 1 }
+  { name: "image", maxCount: 1 }
 ]);
 router.post("/", cpUpload, async (req, res, next) => {
   try {
     console.log(req.files["image"][0]);
-    console.log(req.files["video"][0]);
 
     const { name, price, owner } = req.body;
 
@@ -25,10 +23,6 @@ router.post("/", cpUpload, async (req, res, next) => {
       image: {
         data: fs.readFileSync(req.files["image"][0].path),
         contentType: req.files["image"][0].mimetype
-      },
-      video: {
-        data: fs.readFileSync(req.files["video"][0].path),
-        contentType: req.files["video"][0].mimetype
       }
     });
 
@@ -61,52 +55,16 @@ router.get("/:id", async (req, res, next) => {
 router.put("/", cpUpload, async (req, res, next) => {
   try {
     const product = await productModel.findOne({ _id: req.body.id });
-    console.log(product);
-    console.log(req.body.owner);
     if (product.owner !== req.body.owner) {
       res.status(500).json({ message: "Usuario no es owner" });
     } else {
-      if (!req.files["image"] && !req.files["video"]) {
+      if (!req.files["image"]) {
         await productModel.findOneAndUpdate(
           { _id: req.body.id },
           {
             $set: {
               name: req.body.name,
               price: req.body.price
-            }
-          },
-          { useFindAndModify: false }
-        );
-        console.log("ninguno existe");
-        res.status(200).json({ message: "Producto actualizado" });
-      } else if (!req.files["image"]) {
-        await productModel.findOneAndUpdate(
-          { _id: req.body.id },
-          {
-            $set: {
-              name: req.body.name,
-              price: req.body.price,
-              video: {
-                data: fs.readFileSync(req.files["video"][0].path),
-                contentType: req.files["video"][0].mimetype
-              }
-            }
-          },
-          { useFindAndModify: false }
-        );
-        console.log("imagen no existe");
-        res.status(200).json({ message: "Producto actualizado" });
-      } else if (!req.files["video"]) {
-        await productModel.findOneAndUpdate(
-          { _id: req.body.id },
-          {
-            $set: {
-              name: req.body.name,
-              price: req.body.price,
-              image: {
-                data: fs.readFileSync(req.files["image"][0].path),
-                contentType: req.files["image"][0].mimetype
-              }
             }
           },
           { useFindAndModify: false }
@@ -123,16 +81,11 @@ router.put("/", cpUpload, async (req, res, next) => {
               image: {
                 data: fs.readFileSync(req.files["image"][0].path),
                 contentType: req.files["image"][0].mimetype
-              },
-              video: {
-                data: fs.readFileSync(req.files["video"][0].path),
-                contentType: req.files["video"][0].mimetype
               }
             }
           },
           { useFindAndModify: false }
         );
-        console.log("todos existen");
         res.status(200).json({ message: "Producto actualizado" });
       }
     }
@@ -152,32 +105,6 @@ router.delete("/:id/:owner", ownerAuth, async (req, res, next) => {
   } catch (e) {
     res.status(500).json({ message: "Producto no encontrado" });
   }
-});
-
-router.post("/images", upload.single("image"), async (req, res, next) => {
-  console.log(req.file);
-  console.log(req.body);
-  try {
-    await productModel.findOneAndUpdate(
-      { _id: req.body.id },
-      { $set: { image: req.file.path } }
-    );
-    res.status(200).json({ message: "Image uploaded" });
-  } catch (e) {
-    res.status(500).json({ message: "Error with upload" });
-  }
-});
-
-router.get("/image/file", (req, res) => {
-  const filePath = "uploads\\fa1f1d5c48e4373d59cdf82cd3e0287d";
-  const obj = {
-    data: fs.readFileSync(filePath),
-    contentType: "image/jpeg"
-  }; // find out the filePath based on given fileName
-  //res.sendFile(filePath,{ root: path.join(__dirname, '../../../uploads') });
-  //res.json({message:"hola"})
-  res.contentType("json");
-  res.send(obj);
 });
 
 module.exports = router;

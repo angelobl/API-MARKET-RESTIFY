@@ -36,7 +36,6 @@ class App extends React.Component {
       productPrice: "",
       prediction: [],
       fileImage: null,
-      fileVideo: null,
       image:""
     };
   }
@@ -75,8 +74,7 @@ class App extends React.Component {
     }
     if (
       !this.state.prediction ||
-      !this.state.fileImage ||
-      !this.state.fileVideo
+      !this.state.fileImage
     ) {
       alert("Insert an image");
       return;
@@ -108,7 +106,6 @@ class App extends React.Component {
 
     formData.set("enctype", "multipart/form-data");
     formData.append("image", this.state.fileImage);
-    formData.append("video", this.state.fileVideo);
     formData.append("name", this.state.productName);
     formData.append("price", this.state.productPrice);
     formData.append("owner", this.state.owner);
@@ -135,7 +132,6 @@ class App extends React.Component {
     this.setState({ productName: event.target.dataset.name });
     this.setState({ productPrice: event.target.dataset.price });
     this.setState({ image: event.target.dataset.image });
-    this.setState({ video: event.target.dataset.video });
     this.props.history.push("/update");
   };
 
@@ -174,7 +170,6 @@ class App extends React.Component {
 
     formData.set("enctype", "multipart/form-data");
     formData.append("image", this.state.fileImage);
-    formData.append("video", this.state.fileVideo);
     formData.append("name", this.state.productName);
     formData.append("price", this.state.productPrice);
     formData.append("owner", this.state.owner);
@@ -192,24 +187,11 @@ class App extends React.Component {
     this.setState({ productPrice: "" });
     this.setState({ productId: "" });
     this.setState({ image: null });
-    this.setState({ video: null });
     this.props.history.push("/products");
   };
 
   handleLogin = async event => {
     event.preventDefault();
-
-    /*
-    const res = await fetch("http://localhost:4000/products/image/file")
-    const json = await res.json();
-    console.log(json);
-    
-``
-  const base64 = arrayBufferToBase64(json.data.data)
-  const base64Flag = 'data:image/jpeg;base64,';
-    console.log(base64)
-    this.setState({blob:base64Flag+base64})
-    */
 
     console.log("logeando");
     const res = await fetch("http://localhost:4000/users/signin", {
@@ -331,7 +313,6 @@ class App extends React.Component {
                     productPrice={this.state.productPrice}
                     handleFiles={this.handleFiles}
                     image={this.state.image}
-                    video={this.state.video}
                   />
                 )}
               />
