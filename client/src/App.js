@@ -11,17 +11,13 @@ import AddProduct from "./components/add-product";
 import Update from "./components/update";
 import Chat from "./components/chat";
 
+//``
+
 const getProducts = async () => {
   const response = await fetch("http://localhost:4000/products");
   const products = await response.json();
+  console.log(products);
   return products;
-};
-
-const arrayBufferToBase64 = (buffer) => {
-  var binary = '';
-  var bytes = [].slice.call(new Uint8Array(buffer));
-  bytes.forEach((b) => binary += String.fromCharCode(b));
-  return window.btoa(binary);
 };
 
 class App extends React.Component {
@@ -40,13 +36,15 @@ class App extends React.Component {
       productPrice: "",
       prediction: [],
       fileImage: null,
-      fileVideo:null,
-      blob:null
+      fileVideo: null,
+      image:""
     };
   }
 
   async componentDidMount() {
     const products = await getProducts();
+    console.log("chapando products");
+    console.log(products);
     this.setState({ products: products });
   }
 
@@ -75,7 +73,11 @@ class App extends React.Component {
       alert("Insert all fields");
       return;
     }
-    if (!this.state.prediction || !this.state.fileImage || !this.state.fileVideo) {
+    if (
+      !this.state.prediction ||
+      !this.state.fileImage ||
+      !this.state.fileVideo
+    ) {
       alert("Insert an image");
       return;
     }
@@ -102,56 +104,38 @@ class App extends React.Component {
     }
 
     //Post request
-    /*
-    const res = await fetch("http://localhost:4000/products", {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      method: "POST",
-      body: JSON.stringify({
-        name: this.state.productName,
-        price: this.state.productPrice,
-        owner: this.state.owner
-      })
-    });
-    const json1 = await res.json();
-    */
-
     const formData = new FormData();
 
-    formData.set('enctype','multipart/form-data')
-    formData.append('image', this.state.fileImage);
-    formData.append('video', this.state.fileVideo);
-    formData.append('name', this.state.productName);
-    formData.append('price', this.state.productPrice);
-    formData.append('owner', this.state.owner);
+    formData.set("enctype", "multipart/form-data");
+    formData.append("image", this.state.fileImage);
+    formData.append("video", this.state.fileVideo);
+    formData.append("name", this.state.productName);
+    formData.append("price", this.state.productPrice);
+    formData.append("owner", this.state.owner);
 
-    const res2 = await fetch("http://localhost:4000/products", {
+    const res = await fetch("http://localhost:4000/products", {
       method: "POST",
       body: formData
-    })
-    const json2 = await res2.json();
-    console.log(json2);
+    });
+    const json = await res.json();
+    console.log(json);
 
-    
     const products = await getProducts();
 
-    
     this.setState({ products: products });
     this.setState({ productName: "" });
     this.setState({ productPrice: "" });
 
-    alert(json2.message)
-    /*
-    
-    */
+    alert(json.message);
+    this.props.history.push("/products");
   };
 
   handleUpdateRedirect = event => {
     this.setState({ productId: event.target.dataset.id });
     this.setState({ productName: event.target.dataset.name });
     this.setState({ productPrice: event.target.dataset.price });
+    this.setState({ image: event.target.dataset.image });
+    this.setState({ video: event.target.dataset.video });
     this.props.history.push("/update");
   };
 
@@ -161,22 +145,45 @@ class App extends React.Component {
     if (!this.state.productName || !this.state.productPrice) {
       alert("Insert all fields");
       return;
+    } 
+    if (!this.state.prediction) {
+      alert("Error with prediction");
+      return;
     }
+    
+      const productNames = this.state.productName.split(" ");
+      console.log(productNames);
+      const predictions = this.state.prediction.map(p => p.label);
 
-    const res = await fetch(
-      `http://localhost:4000/products/${this.state.productId}/${this.state.owner}`,
-      {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        method: "PUT",
-        body: JSON.stringify({
-          name: this.state.productName,
-          price: this.state.productPrice
-        })
+      const matches = predictions.filter(p => {
+        for (var i = 0; i < productNames.length; i++) {
+          if (productNames[i] === "") return false;
+          if (p.includes(productNames[i].toLowerCase())) return true;
+        }
+      });
+
+      console.log(matches.length);
+
+      if (!matches.length) {
+        alert("Insert an image that matches your product");
+        return;
       }
-    );
+    
+
+    const formData = new FormData();
+
+    formData.set("enctype", "multipart/form-data");
+    formData.append("image", this.state.fileImage);
+    formData.append("video", this.state.fileVideo);
+    formData.append("name", this.state.productName);
+    formData.append("price", this.state.productPrice);
+    formData.append("owner", this.state.owner);
+    formData.append("id", this.state.productId);
+
+    const res = await fetch("http://localhost:4000/products", {
+      method: "PUT",
+      body: formData
+    });
     const json = await res.json();
     alert(json.message);
     const products = await getProducts();
@@ -184,6 +191,8 @@ class App extends React.Component {
     this.setState({ productName: "" });
     this.setState({ productPrice: "" });
     this.setState({ productId: "" });
+    this.setState({ image: null });
+    this.setState({ video: null });
     this.props.history.push("/products");
   };
 
@@ -195,15 +204,13 @@ class App extends React.Component {
     const json = await res.json();
     console.log(json);
     
-
+``
   const base64 = arrayBufferToBase64(json.data.data)
   const base64Flag = 'data:image/jpeg;base64,';
     console.log(base64)
     this.setState({blob:base64Flag+base64})
     */
-    
 
-    
     console.log("logeando");
     const res = await fetch("http://localhost:4000/users/signin", {
       headers: {
@@ -225,7 +232,6 @@ class App extends React.Component {
     } else if (json.message) {
       alert(json.message);
     }
-    
   };
 
   handleRegister = async event => {
@@ -258,19 +264,9 @@ class App extends React.Component {
     this.setState({ owner: "" });
   };
 
-  handleFile = file => {
-    console.log(file);
-    this.setState({ file: file });
+  handleFiles = (key, value) => {
+    this.setState({ [key]: value });
   };
-
-  handleResults = results => {
-    console.log(results);
-    this.setState({ prediction: results });
-  };
-
-  handleFiles = (key,value) => {
-    this.setState({[key]:value})
-  }
 
   render() {
     return (
@@ -284,8 +280,6 @@ class App extends React.Component {
               <Login
                 handleChange={this.handleChange}
                 handleLogin={this.handleLogin}
-                blob={this.state.blob}
-                exampleRef={this.exampleRef}
               />
             )}
           />
@@ -335,6 +329,9 @@ class App extends React.Component {
                     handleChange={this.handleChange}
                     productName={this.state.productName}
                     productPrice={this.state.productPrice}
+                    handleFiles={this.handleFiles}
+                    image={this.state.image}
+                    video={this.state.video}
                   />
                 )}
               />

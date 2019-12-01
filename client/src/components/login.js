@@ -20,9 +20,6 @@ const Login = props => (
         Login
       </button>
     </form>
-    <img src={props.blob} />
-    
-
     <Link to="/register">Register</Link>
   </div>
 );

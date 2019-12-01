@@ -1,5 +1,4 @@
 import React, { useCallback, useState, useRef, useEffect } from "react";
-import { useDropzone } from "react-dropzone";
 import * as ml5 from "ml5";
 
 const predict = async (imageURL, imageRef) => {
@@ -28,7 +27,15 @@ const AddProduct = props => {
     let file = e.dataTransfer.files[0];
     console.log(file);
     if(file.type!=="image/png" && file.type!=="image/jpeg")
+    {
+      alert("Only jpg and png format are accepted")
       return
+    }
+    if(file.size>16000000)
+    {
+      alert("Only 16mb files are accepted")
+      return
+    }
     
     //if(file.type==="")
     props.handleFiles("fileImage",file);
@@ -43,7 +50,7 @@ const AddProduct = props => {
       const binaryStr = reader.result;
       //console.log(binaryStr)
       setimageURL(reader.result);
-      console.log(binaryStr);
+      //console.log(binaryStr);
       //props.handleFile(reader.result)
     };
     reader.readAsDataURL(file);
@@ -53,7 +60,15 @@ const AddProduct = props => {
     e.preventDefault();
     let file = e.dataTransfer.files[0];
     if(file.type!=="video/mp4")
+    {
+      alert("Only mp4 format are accepted")
       return
+    }
+    if(file.size>16000000)
+    {
+      alert("Only 16mb files are accepted")
+      return
+    }
     
     console.log(file);
     //if(file.type==="")
@@ -69,7 +84,7 @@ const AddProduct = props => {
       const binaryStr = reader.result;
       //console.log(binaryStr)
       setVideoURL(reader.result);
-      console.log(binaryStr);
+      //console.log(binaryStr);
       //props.handleFile(reader.result)
     };
     reader.readAsDataURL(file);
@@ -139,18 +154,18 @@ const AddProduct = props => {
           </video>
 
           <div
-            class="preloader-wrapper small active"
+            className="preloader-wrapper small active"
             style={{ display: isLoading ? "" : "none", marginLeft: "40%" }}
           >
-            <div class="spinner-layer spinner-green-only">
-              <div class="circle-clipper left">
-                <div class="circle"></div>
+            <div className="spinner-layer spinner-green-only">
+              <div className="circle-clipper left">
+                <div className="circle"></div>
               </div>
-              <div class="gap-patch">
-                <div class="circle"></div>
+              <div className="gap-patch">
+                <div className="circle"></div>
               </div>
-              <div class="circle-clipper right">
-                <div class="circle"></div>
+              <div className="circle-clipper right">
+                <div className="circle"></div>
               </div>
             </div>
           </div>

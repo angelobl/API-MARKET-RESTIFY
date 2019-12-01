@@ -5,7 +5,8 @@ const productShema = new Schema({
   name: {type: String, required: true},
   owner: { type: String, required: true},
   price: { type: Number, required: true},
-  image: { data: Buffer, contentType: String}
+  image: { data: Buffer, contentType: String},
+  video: { data: Buffer, contentType: String}
 });
 
 //Usamos el metodo model para reutilizar el modelo anterior
